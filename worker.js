@@ -10,7 +10,7 @@ export default {
     if (url.pathname === '/api/health' || url.pathname === '/healthz') {
       return new Response(JSON.stringify({
         status: 'ok',
-        service: 'technova-storefront',
+        service: 'tech-nova',
         timestamp: new Date().toISOString()
       }), {
         headers: {

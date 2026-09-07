@@ -1,7 +1,10 @@
-name = "technova"
+name = "tech-nova"
 main = "worker.js"
 compatibility_date = "2024-09-23"
 compatibility_flags = ["nodejs_compat"]
+
+[build]
+command = "npm run build"
 
 [assets]
 directory = "./dist"
