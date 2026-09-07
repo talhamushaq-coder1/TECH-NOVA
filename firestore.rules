@@ -1,0 +1,41 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Global Safety Net: default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function isValidOrder(data) {
+      return data.customerName is string && data.customerName.size() > 0 && data.customerName.size() <= 150
+        && data.customerEmail is string && data.customerEmail.size() > 3 && data.customerEmail.size() <= 150
+        && data.shippingAddress is string && data.shippingAddress.size() > 0 && data.shippingAddress.size() <= 500
+        && data.totalAmount is number && data.totalAmount >= 0
+        && data.items is string && data.items.size() <= 5000;
+    }
+
+    function isValidSubscriber(data) {
+      return data.email is string && data.email.size() > 3 && data.email.size() <= 150;
+    }
+
+    match /products/{productId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    match /orders/{orderId} {
+      allow create: if isValidId(orderId) && isValidOrder(request.resource.data);
+      allow get: if isValidId(orderId);
+      allow list, update, delete: if false;
+    }
+
+    match /subscribers/{subscriberId} {
+      allow create: if isValidId(subscriberId) && isValidSubscriber(request.resource.data);
+      allow read, update, delete: if false;
+    }
+  }
+}

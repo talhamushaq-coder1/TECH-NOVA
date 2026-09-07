@@ -1,0 +1,6 @@
+{
+  "name": "TECHNOVA — Premium Tech & Gadgets in Pakistan",
+  "description": "Shop premium gadgets, smart accessories, audio products, gaming gear and modern technology at TECHNOVA. Fast delivery across Pakistan.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

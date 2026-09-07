@@ -1,0 +1,64 @@
+{
+  "entities": {
+    "Product": {
+      "title": "Product",
+      "description": "Catalog product listing in the store",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string", "maxLength": 200 },
+        "category": { "type": "string", "maxLength": 100 },
+        "description": { "type": "string", "maxLength": 1000 },
+        "rating": { "type": "number" },
+        "reviewsCount": { "type": "number" },
+        "price": { "type": "number" },
+        "oldPrice": { "type": "number" },
+        "discount": { "type": "string", "maxLength": 50 },
+        "image": { "type": "string", "maxLength": 500 }
+      },
+      "required": ["title", "category", "price"]
+    },
+    "Order": {
+      "title": "Order",
+      "description": "Customer order placed in the store",
+      "type": "object",
+      "properties": {
+        "customerName": { "type": "string", "maxLength": 150 },
+        "customerEmail": { "type": "string", "maxLength": 150 },
+        "customerPhone": { "type": "string", "maxLength": 50 },
+        "shippingAddress": { "type": "string", "maxLength": 500 },
+        "totalAmount": { "type": "number" },
+        "items": { "type": "string", "maxLength": 5000 },
+        "status": { "type": "string", "maxLength": 50 },
+        "createdAt": { "type": "string", "maxLength": 100 },
+        "emailNotificationSent": { "type": "boolean" },
+        "emailNotificationSentAt": { "type": "string", "maxLength": 100 },
+        "emailRecipient": { "type": "string", "maxLength": 150 }
+      },
+      "required": ["customerName", "customerEmail", "shippingAddress", "totalAmount"]
+    },
+    "Subscriber": {
+      "title": "Subscriber",
+      "description": "Newsletter subscriber email",
+      "type": "object",
+      "properties": {
+        "email": { "type": "string", "maxLength": 150 },
+        "subscribedAt": { "type": "string", "maxLength": 100 }
+      },
+      "required": ["email"]
+    }
+  },
+  "firestore": {
+    "/products/{productId}": {
+      "schema": "Product",
+      "description": "Collection of all e-commerce products"
+    },
+    "/orders/{orderId}": {
+      "schema": "Order",
+      "description": "Customer orders submitted from checkout"
+    },
+    "/subscribers/{subscriberId}": {
+      "schema": "Subscriber",
+      "description": "Subscribers for the email newsletter"
+    }
+  }
+}
