@@ -3,6 +3,31 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script>
+    /* Prevent "Cannot set property fetch of #<Window> which has only a getter" across environments */
+    (function() {
+      try {
+        var targets = [typeof window !== 'undefined' ? window : null];
+        if (typeof Window !== 'undefined' && Window.prototype) targets.push(Window.prototype);
+        if (typeof globalThis !== 'undefined') targets.push(globalThis);
+        targets.forEach(function(target) {
+          if (!target) return;
+          try {
+            var desc = Object.getOwnPropertyDescriptor(target, 'fetch');
+            if (desc && desc.get && !desc.set) {
+              var originalGet = desc.get;
+              Object.defineProperty(target, 'fetch', {
+                get: function() { return originalGet.call(this); },
+                set: function(val) { /* safe no-op or custom interceptor */ },
+                configurable: true,
+                enumerable: true
+              });
+            }
+          } catch (e) {}
+        });
+      } catch (err) {}
+    })();
+  </script>
   <title>TECHNOVA — Premium Tech &amp; Gadgets in Pakistan</title>
   <meta name="description" content="Shop premium gadgets, smart accessories, audio products, gaming gear and modern technology at TECHNOVA. Fast delivery across Pakistan.">
   <meta property="og:title" content="TECHNOVA — Premium Tech &amp; Gadgets in Pakistan">

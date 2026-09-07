@@ -39,30 +39,42 @@ export interface SupabaseOrderRecord {
   created_at?: string;
 }
 
+function sanitizeUrl(raw: string): string {
+  if (!raw || typeof raw !== 'string') return '';
+  const match = raw.match(/https?:\/\/[^\s\)\'\"\]]+/i);
+  return match ? match[0].trim() : raw.trim();
+}
+
+function sanitizeKey(raw: string): string {
+  if (!raw || typeof raw !== 'string') return '';
+  const token = raw.trim().split(/\s+/)[0];
+  return token || raw.trim();
+}
+
 /**
  * Retrieve active Supabase credentials (checking environment first, then localStorage)
  */
 export function getActiveSupabaseCredentials(): { url: string; key: string; source: 'env' | 'custom' | 'none' } {
   // 1. Check Vite Environment Variables
-  const envUrl = (import.meta as any).env?.VITE_SUPABASE_URL;
-  const envKey = (import.meta as any).env?.VITE_SUPABASE_ANON_KEY;
+  const envUrl = sanitizeUrl((import.meta as any).env?.VITE_SUPABASE_URL || '');
+  const envKey = sanitizeKey((import.meta as any).env?.VITE_SUPABASE_ANON_KEY || '');
 
-  if (envUrl && envKey && typeof envUrl === 'string' && typeof envKey === 'string' && envUrl.trim() && envKey.trim()) {
+  if (envUrl && envKey && (envUrl.startsWith('https://') || envUrl.startsWith('http://'))) {
     return {
-      url: envUrl.trim(),
-      key: envKey.trim(),
+      url: envUrl,
+      key: envKey,
       source: 'env',
     };
   }
 
   // 2. Check Local Storage custom configuration
   try {
-    const localUrl = localStorage.getItem('technova_supabase_url');
-    const localKey = localStorage.getItem('technova_supabase_key');
-    if (localUrl && localKey && localUrl.trim() && localKey.trim()) {
+    const localUrl = sanitizeUrl(localStorage.getItem('technova_supabase_url') || '');
+    const localKey = sanitizeKey(localStorage.getItem('technova_supabase_key') || '');
+    if (localUrl && localKey && (localUrl.startsWith('https://') || localUrl.startsWith('http://'))) {
       return {
-        url: localUrl.trim(),
-        key: localKey.trim(),
+        url: localUrl,
+        key: localKey,
         source: 'custom',
       };
     }
